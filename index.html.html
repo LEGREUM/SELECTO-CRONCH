@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="NóminaCO"/>
+<meta name="theme-color" content="#1a1612"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<title>NóminaCO Pro 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<!-- jsPDF: genera PDF real descargable sin ventanas emergentes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f4f1eb;--bg2:#ece8df;--sur:#fff;--sur2:#faf8f3;
+  --bor:#d5d0c4;--bor2:#eae6dc;
+  --ink:#1a1612;--ink2:#4a443c;--ink3:#8a8078;
+  --gold:#b07d10;--gold2:#c9930f;--gold3:#e8b020;
+  --red:#b83030;--green:#1a5c38;
+  --fh:'Syne',sans-serif;--fm:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:Georgia,serif;min-height:100vh;}
+
+header{background:var(--ink);color:#f4f1eb;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:300;}
+.logo{font-family:var(--fh);font-weight:800;font-size:1.1rem;display:flex;align-items:center;gap:8px;}
+.la{color:var(--gold3);}
+.ls{font-family:var(--fm);font-size:.55rem;color:#6a6058;display:block;line-height:1.3;}
+.hb{font-family:var(--fm);font-size:.6rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:4px 10px;border-radius:3px;color:#a09080;}
+.hb strong{color:var(--gold3);}
+
+nav{background:var(--sur);border-bottom:2px solid var(--bor);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:200;}
+nav::-webkit-scrollbar{display:none;}
+.nb{flex-shrink:0;padding:11px 14px;border:none;background:none;font-family:var(--fh);font-size:.72rem;font-weight:700;color:var(--ink3);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s;}
+.nb:hover{color:var(--ink);}
+.nb.active{color:var(--gold);border-bottom-color:var(--gold);}
+.bc{background:var(--gold);color:#fff;font-size:.54rem;padding:1px 5px;border-radius:8px;font-family:var(--fm);margin-left:3px;}
+
+.sec{display:none;padding:1.25rem;max-width:1080px;margin:0 auto;animation:fi .2s ease;}
+.sec.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--sur);border:1px solid var(--bor);border-radius:4px;padding:1.25rem;margin-bottom:.85rem;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.ch{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;}
+.ct{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;}
+.ltag{font-family:var(--fm);font-size:.54rem;background:var(--ink);color:var(--gold3);padding:2px 6px;border-radius:2px;}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin-bottom:.9rem;}
+.sb{background:var(--sur);border:1px solid var(--bor);border-radius:4px;padding:.85rem;text-align:center;}
+.sv{font-family:var(--fm);font-size:1.2rem;font-weight:600;color:var(--gold);}
+.sl{font-family:var(--fm);font-size:.57rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.7px;margin-top:3px;}
+
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:.75rem;}
+.fr{display:flex;flex-direction:column;gap:4px;}
+.fr label{font-family:var(--fm);font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.7px;}
+.fr input,.fr select{background:var(--sur2);border:1.5px solid var(--bor);border-radius:3px;padding:8px 10px;color:var(--ink);font-family:var(--fm);font-size:.79rem;outline:none;width:100%;transition:border-color .15s;}
+.fr input:focus,.fr select:focus{border-color:var(--gold);}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:3px;border:none;cursor:pointer;font-family:var(--fh);font-size:.75rem;font-weight:700;transition:all .15s;white-space:nowrap;}
+.bg{background:var(--gold);color:#fff;}.bg:hover{background:var(--gold2);}
+.bk{background:var(--ink);color:#f4f1eb;}.bk:hover{background:#2d2820;}
+.bo{background:transparent;border:1.5px solid var(--bor);color:var(--ink2);}.bo:hover{border-color:var(--gold);color:var(--gold);}
+.br{background:var(--red);color:#fff;}.br:hover{background:#962626;}
+.bgr{background:var(--green);color:#fff;}.bgr:hover{background:#144a2c;}
+.bsm{padding:5px 9px;font-size:.68rem;}
+
+/* colilla en tiempo real */
+.rp{background:var(--sur2);border:1.5px solid var(--bor);border-radius:3px;padding:.9rem;}
+.rtitle{font-family:var(--fm);font-size:.6rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.75rem;padding-bottom:.45rem;border-bottom:1px solid var(--bor);}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--bor2);font-size:.8rem;}
+.rrow:last-child{border:none;}
+.rl{color:var(--ink2);}
+.rv{font-family:var(--fm);font-size:.76rem;font-weight:600;}
+.rv.pos{color:var(--green);}.rv.neg{color:var(--red);}.rv.acc{color:var(--gold);}.rv.neu{color:var(--ink3);}
+.rrow.tot{border-top:2px solid var(--ink)!important;margin-top:4px;padding-top:7px;}
+.rrow.tot .rl{font-weight:700;font-family:var(--fh);color:var(--ink);}
+.rrow.tot .rv{font-size:.9rem;color:var(--gold)!important;}
+
+.ib{background:rgba(176,125,16,.07);border-left:3px solid var(--gold);padding:.7rem .85rem;font-size:.74rem;color:var(--ink2);margin-top:.65rem;line-height:1.7;}
+.ib strong{color:var(--gold);}
+
+/* estado del PDF */
+.pst{display:none;align-items:center;gap:8px;padding:8px 12px;border-radius:3px;font-family:var(--fm);font-size:.72rem;margin-top:.6rem;}
+.pst.show{display:flex;}
+.pst.ok{background:rgba(26,92,56,.1);border:1px solid rgba(26,92,56,.3);color:var(--green);}
+.pst.err{background:rgba(184,48,48,.1);border:1px solid rgba(184,48,48,.3);color:var(--red);}
+.pst.load{background:rgba(176,125,16,.1);border:1px solid rgba(176,125,16,.3);color:var(--gold);}
+.spin{display:inline-block;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* tablas */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.77rem;}
+thead tr{background:var(--ink);}
+th{font-family:var(--fm);font-size:.57rem;text-transform:uppercase;letter-spacing:.7px;color:var(--gold3);padding:8px 10px;text-align:left;white-space:nowrap;}
+td{padding:8px 10px;border-bottom:1px solid var(--bor2);color:var(--ink2);}
+tbody tr:hover td{background:rgba(176,125,16,.04);}
+td.mn{font-family:var(--fm);font-size:.74rem;}
+td.gr{color:var(--green);font-family:var(--fm);font-weight:600;}
+td.go{color:var(--gold);font-family:var(--fm);font-weight:600;}
+td.rd{color:var(--red);}
+.es{text-align:center;padding:2.25rem;color:var(--ink3);}
+.es p{font-family:var(--fm);font-size:.73rem;line-height:1.6;}
+
+.stabs{display:flex;border:1.5px solid var(--bor);border-radius:3px;overflow:hidden;width:fit-content;margin-bottom:.85rem;flex-wrap:wrap;}
+.stab{padding:6px 13px;border:none;background:var(--sur2);color:var(--ink3);font-family:var(--fm);font-size:.66rem;font-weight:600;cursor:pointer;border-right:1px solid var(--bor);transition:all .15s;}
+.stab:last-child{border-right:none;}
+.stab:hover{background:var(--bg2);}
+.stab.active{background:var(--ink);color:var(--gold3);}
+.sp{display:none;}.sp.active{display:block;animation:fi .2s ease;}
+
+.hlist{display:flex;flex-direction:column;gap:.45rem;}
+.hcard{background:var(--sur);border:1px solid var(--bor);border-radius:3px;padding:.85rem 1rem;display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:start;}
+.hname{font-family:var(--fh);font-size:.85rem;font-weight:700;}
+.hmeta{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;}
+.hneto{font-family:var(--fm);font-size:.95rem;font-weight:600;color:var(--green);text-align:right;}
+.hper{font-family:var(--fm);font-size:.59rem;color:var(--ink3);text-align:right;margin-top:2px;}
+.hact{display:flex;gap:4px;margin-top:.55rem;flex-wrap:wrap;}
+
+.mo{position:fixed;inset:0;background:rgba(26,22,18,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.mo.open{display:flex;}
+.md{background:var(--sur);border:1px solid var(--bor);border-radius:4px;padding:1.6rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.22);animation:fi .2s ease;}
+.mdt{font-family:var(--fh);font-size:.95rem;font-weight:800;margin-bottom:1rem;padding-bottom:.7rem;border-bottom:2px solid var(--bor);}
+.mda{display:flex;gap:.6rem;justify-content:flex-end;margin-top:.9rem;padding-top:.7rem;border-top:1px solid var(--bor);}
+
+/* instruccion correo */
+.correo-tip{background:rgba(26,92,56,.08);border:1px solid rgba(26,92,56,.25);border-radius:4px;padding:.9rem 1rem;font-size:.78rem;color:var(--green);margin-top:.6rem;display:none;line-height:1.7;}
+.correo-tip strong{color:var(--green);}
+.correo-tip.show{display:block;}
+
+/* ── MOBILE BOTTOM NAV ── */
+.bottom-nav{
+  height:60px;background:var(--ink);display:flex;align-items:stretch;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  box-shadow:0 -2px 12px rgba(0,0,0,.25);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;border:none;background:none;
+  cursor:pointer;padding:6px 2px;min-width:0;transition:background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bn-item:active{background:rgba(255,255,255,.08);}
+.bn-item.active{background:rgba(232,176,32,.12);}
+.bn-icon{font-size:1.3rem;line-height:1;}
+.bn-lbl{font-family:var(--fh);font-size:.5rem;font-weight:700;color:var(--ink3);}
+.bn-item.active .bn-lbl{color:var(--gold3);}
+.bn-bd{background:var(--gold);color:var(--ink);font-size:.48rem;padding:1px 4px;
+  border-radius:8px;font-family:var(--fm);position:absolute;top:4px;right:calc(50% - 20px);}
+
+/* ── MORE MODAL ── */
+.mo-more{position:fixed;inset:0;background:rgba(26,22,18,.6);z-index:500;display:none;align-items:flex-end;}
+.mo-more.open{display:flex;}
+.md-more{background:var(--sur);border-radius:20px 20px 0 0;padding:20px 16px 32px;width:100%;
+  box-shadow:0 -8px 40px rgba(0,0,0,.25);animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.md-handle{width:40px;height:4px;background:var(--bor);border-radius:2px;margin:0 auto 16px;}
+.more-title{font-family:var(--fh);font-size:.9rem;font-weight:800;margin-bottom:14px;color:var(--ink);}
+.more-btn{display:flex;align-items:center;gap:12px;padding:14px 12px;border:1px solid var(--bor);
+  border-radius:10px;background:var(--sur2);margin-bottom:8px;cursor:pointer;width:100%;text-align:left;
+  font-family:var(--fh);font-size:.82rem;font-weight:700;color:var(--ink);
+  -webkit-tap-highlight-color:transparent;}
+.more-btn:active{background:var(--bg2);}
+
+/* ── INSTALL BANNER ── */
+.install-banner{display:none;align-items:center;gap:10px;background:var(--ink);color:#f4f1eb;
+  padding:12px 14px;margin:0 0 10px;border-radius:10px;cursor:pointer;}
+.install-banner.show{display:flex;}
+.ib-btn{background:var(--gold);color:var(--ink);font-family:var(--fh);font-weight:700;
+  font-size:.72rem;padding:8px 12px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap;}
+
+/* Mobile body padding for bottom nav */
+@media(max-width:599px){
+  body{padding-bottom:60px;}
+  .btn{min-height:48px;font-size:.8rem;}
+  .fr input,.fr select{font-size:16px;padding:13px 12px;}
+  /* hide top nav on mobile, show bottom nav */
+  nav{display:none;}
+  .bottom-nav{display:flex;}
+  .sec{padding:12px 12px 6px;}
+}
+@media(min-width:600px){
+  nav{display:flex;}
+  .bottom-nav{display:none;}
+  .mo-more{display:none!important;}
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span>Nómina<span class="la">CO</span> Pro<span class="ls">Colombia 2026</span></span>
+  </div>
+  <div class="hb">SMMLV <strong>$1.750.905</strong> · Aux. <strong>$249.095</strong></div>
+</header>
+
+<nav>
+  <button class="nb active" onclick="goSec('dash',this)">🏠 Inicio</button>
+  <button class="nb" onclick="goSec('cfg',this)">⚙️ Mi Empresa</button>
+  <button class="nb" onclick="goSec('emps',this)">👥 Empleados <span class="bc" id="cnt-emp">0</span></button>
+  <button class="nb" onclick="goSec('nom',this)">📋 Liquidar</button>
+  <button class="nb" onclick="goSec('hist',this)">📜 Historial <span class="bc" id="cnt-hist">0</span></button>
+  <button class="nb" onclick="goSec('ext',this)">⏰ Extras</button>
+  <button class="nb" onclick="goSec('pres',this)">🏦 Prestaciones</button>
+  <button class="nb" onclick="goSec('ss',this)">🛡️ Seg. Social</button>
+</nav>
+
+<!-- INICIO -->
+<div id="dash" class="sec active">
+    <div class="install-banner" id="install-banner">
+      <span style="font-size:1.5rem">📱</span>
+      <div style="flex:1;font-size:.78rem;line-height:1.5;"><strong style="color:var(--gold3);font-family:var(--fh)">Instalar NóminaCO</strong><br/>Agrega la app a tu pantalla de inicio</div>
+      <button class="ib-btn" onclick="installPWA()">Instalar</button>
+    </div>
+
+  <div class="stats">
+    <div class="sb"><div class="sv" id="st-e">0</div><div class="sl">Empleados</div></div>
+    <div class="sb"><div class="sv" id="st-n">0</div><div class="sl">Nóminas</div></div>
+    <div class="sb"><div class="sv" id="st-m">$0</div><div class="sl">Este mes</div></div>
+    <div class="sb"><div class="sv" id="st-t">$0</div><div class="sl">Histórico</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.7rem;">
+    <div class="card">
+      <div class="ct" style="margin-bottom:.8rem;">📋 Valores 2026</div>
+      <table><tbody>
+        <tr><td style="padding:4px 0;color:var(--ink3);border-bottom:1px solid var(--bor2)">SMMLV</td><td class="go" style="text-align:right;padding:4px 0;border-bottom:1px solid var(--bor2)">$1.750.905</td></tr>
+        <tr><td style="padding:4px 0;color:var(--ink3);border-bottom:1px solid var(--bor2)">Aux. Transporte</td><td class="go" style="text-align:right;padding:4px 0;border-bottom:1px solid var(--bor2)">$249.095</td></tr>
+        <tr><td style="padding:4px 0;color:var(--ink3);border-bottom:1px solid var(--bor2)">Hora ordinaria</td><td class="go" style="text-align:right;padding:4px 0;border-bottom:1px solid var(--bor2)">$7.296</td></tr>
+        <tr><td style="padding:4px 0;color:var(--ink3)">Jornada máx. 2026</td><td class="mn" style="text-align:right;padding:4px 0;color:var(--ink3)">46h/sem</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="ct" style="margin-bottom:.8rem;">💡 Flujo de trabajo</div>
+      <div style="font-size:.8rem;color:var(--ink2);line-height:1.8;">
+        <div>1. ⚙️ <strong>Mi Empresa</strong> — configura una sola vez</div>
+        <div>2. 👥 <strong>Empleados</strong> — registra colaboradores</div>
+        <div>3. 📋 <strong>Liquidar</strong> — selecciona y calcula</div>
+        <div>4. 📄 <strong>Guardar + PDF</strong> — descarga el desprendible</div>
+        <div>5. ✉️ <strong>Correo</strong> — prepara el mensaje y adjunta PDF</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct" style="margin-bottom:.8rem;">🛡️ SS & Parafiscales</div>
+      <table><tbody>
+        <tr><td style="padding:4px 0;color:var(--ink3);border-bottom:1px solid var(--bor2)">Salud empleado</td><td class="go" style="text-align:right;padding:4px 0;border-bottom:1px solid var(--bor2)">4% IBC</td></tr>
+        <tr><td style="padding:4px 0;color:var(--ink3);border-bottom:1px solid var(--bor2)">Pensión empleado</td><td class="go" style="text-align:right;padding:4px 0;border-bottom:1px solid var(--bor2)">4% IBC</td></tr>
+        <tr><td style="padding:4px 0;color:var(--ink3);border-bottom:1px solid var(--bor2)">Salud empleador</td><td class="go" style="text-align:right;padding:4px 0;border-bottom:1px solid var(--bor2)">8.5% IBC</td></tr>
+        <tr><td style="padding:4px 0;color:var(--ink3)">Pensión empleador</td><td class="go" style="text-align:right;padding:4px 0;">12% IBC</td></tr>
+      </tbody></table>
+      <div class="ib" style="margin-top:.6rem;font-size:.71rem;"><strong>IBC:</strong> devengado sin auxilio transporte</div>
+    </div>
+  </div>
+</div>
+
+<!-- MI EMPRESA -->
+<div id="cfg" class="sec">
+  <div class="card">
+    <div class="ch"><div class="ct">⚙️ Datos de Mi Empresa</div></div>
+    <div class="ib" style="margin-bottom:1rem;">Configura tu empresa <strong>una sola vez</strong>. Estos datos aparecen en todos los PDF que generes.</div>
+    <div class="fg">
+      <div class="fr"><label>Razón Social *</label><input type="text" id="cfg-nom" placeholder="Mi Empresa S.A.S."/></div>
+      <div class="fr"><label>NIT</label><input type="text" id="cfg-nit" placeholder="900.123.456-7"/></div>
+      <div class="fr"><label>Dirección</label><input type="text" id="cfg-dir" placeholder="Calle 10 # 20-30"/></div>
+      <div class="fr"><label>Ciudad</label><input type="text" id="cfg-ciu" placeholder="Medellín, Antioquia"/></div>
+      <div class="fr"><label>Teléfono</label><input type="text" id="cfg-tel" placeholder="604 123 4567"/></div>
+      <div class="fr"><label>Correo empresa</label><input type="email" id="cfg-cor" placeholder="nomina@empresa.com"/></div>
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:.6rem;align-items:center;">
+      <button class="btn bg" onclick="guardarCfg()">💾 Guardar</button>
+      <span id="cfg-ok" style="display:none;font-family:var(--fm);font-size:.74rem;color:var(--green);">✓ Guardado correctamente</span>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLEADOS -->
+<div id="emps" class="sec">
+  <div class="card">
+    <div class="ch">
+      <div class="ct">👥 Empleados Registrados</div>
+      <button class="btn bg" onclick="abrirModal()">+ Nuevo Empleado</button>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Nombre</th><th>Cédula</th><th>Cargo</th><th>Depto.</th><th>Salario</th><th>Contrato</th><th>Correo</th><th>Acciones</th></tr></thead>
+      <tbody id="emp-tb"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- LIQUIDAR -->
+<div id="nom" class="sec">
+  <div class="card">
+    <div class="ch"><div class="ct">📋 Liquidación de Nómina <span class="ltag">CST 127–129</span></div></div>
+    <div class="fg" style="margin-bottom:.8rem;">
+      <div class="fr"><label>Empleado</label>
+        <select id="n-emp" onchange="cargarEmp()"><option value="">— Seleccionar —</option></select>
+      </div>
+      <div class="fr"><label>Período</label><input type="month" id="n-per"/></div>
+    </div>
+    <div class="fg">
+      <div class="fr"><label>Salario Básico ($)</label><input type="number" id="n-sal" value="1750905" oninput="calcLive()"/></div>
+      <div class="fr"><label>Días trabajados</label><input type="number" id="n-dias" value="30" min="1" max="30" oninput="calcLive()"/></div>
+      <div class="fr"><label>Auxilio Transporte</label>
+        <select id="n-aux" onchange="calcLive()"><option value="1">Sí aplica (≤ 2 SMMLV)</option><option value="0">No aplica</option></select>
+      </div>
+      <div class="fr"><label>H.E. Diurnas (h) +25%</label><input type="number" id="n-hxd" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>H.E. Nocturnas (h) +75%</label><input type="number" id="n-hxn" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>H.E. Dom/Fest. Diur. (h) +100%</label><input type="number" id="n-hxdf" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>H.E. Dom/Fest. Noct. (h) +150%</label><input type="number" id="n-hxdfn" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>Rec. Nocturno s/n (h) +35%</label><input type="number" id="n-rn" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>Dom/Festivos s/n (h) +75%</label><input type="number" id="n-dom" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>Otros ingresos ($)</label><input type="number" id="n-oing" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>Retención en la fuente ($)</label><input type="number" id="n-ret" value="0" min="0" oninput="calcLive()"/></div>
+      <div class="fr"><label>Otras deducciones ($)</label><input type="number" id="n-oded" value="0" min="0" oninput="calcLive()"/></div>
+    </div>
+
+    <div class="rp" style="margin-top:.85rem;">
+      <div class="rtitle">Colilla en tiempo real</div>
+      <div id="n-rows"></div>
+      <div style="margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="btn bg"  id="btn-spdf" onclick="guardarYPDF()">💾 Guardar + PDF</button>
+        <button class="btn bk"  id="btn-pdf"  onclick="soloPDF()">📄 Solo PDF</button>
+        <button class="btn bgr" id="btn-mail" onclick="flujoCorreo()">✉️ Enviar por Correo</button>
+        <button class="btn bo"  onclick="resetNom()">↺ Limpiar</button>
+      </div>
+      <div class="pst" id="pst"><span id="pst-ic"></span><span id="pst-msg"></span></div>
+      <div class="correo-tip" id="correo-tip">
+        <strong>📎 Paso a paso para enviar el PDF por correo:</strong><br/>
+        1. El PDF ya se descargó en tu carpeta de <strong>Descargas</strong><br/>
+        2. Se abrió tu cliente de correo (Gmail / Outlook) con el mensaje listo<br/>
+        3. Haz clic en el clip 📎 de adjuntar archivo<br/>
+        4. Selecciona el PDF de la carpeta Descargas y envía ✅
+      </div>
+    </div>
+    <div class="ib"><strong>IBC corregido:</strong> El 4% de salud y pensión se calcula sobre el <strong>total devengado sin auxilio de transporte</strong> (Art. 127 CST).</div>
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div id="hist" class="sec">
+  <div class="card">
+    <div class="ch">
+      <div class="ct">📜 Historial de Nóminas</div>
+      <button class="btn bo bsm" onclick="limpiarHist()">🗑️ Limpiar todo</button>
+    </div>
+    <div id="hist-lista"></div>
+  </div>
+</div>
+
+<!-- EXTRAS -->
+<div id="ext" class="sec">
+  <div class="stabs">
+    <button class="stab active" onclick="showSub(this,'ext-c')">🧮 Calculadora</button>
+    <button class="stab" onclick="showSub(this,'ext-t')">📊 Tabla</button>
+    <button class="stab" onclick="showSub(this,'ext-h')">🕐 Horarios</button>
+  </div>
+  <div id="ext-c" class="sp active"><div class="card">
+    <div class="ch"><div class="ct">⏰ Recargos <span class="ltag">Art. 168–171</span></div></div>
+    <div class="fg">
+      <div class="fr"><label>Salario Mensual ($)</label><input type="number" id="e-sal" value="1750905"/></div>
+      <div class="fr"><label>Tipo</label><select id="e-tipo">
+        <option value="0.25">H.E. Diurna (+25%)</option><option value="0.75">H.E. Nocturna (+75%)</option>
+        <option value="1.00">H.E. Dom/Fest. D. (+100%)</option><option value="1.50">H.E. Dom/Fest. N. (+150%)</option>
+        <option value="0.35">Rec. Nocturno (+35%)</option><option value="0.75b">Dom/Fest. D. (+75%)</option>
+        <option value="1.10">Dom/Fest. N. (+110%)</option>
+      </select></div>
+      <div class="fr"><label>Horas</label><input type="number" id="e-h" value="4" min="0"/></div>
+    </div>
+    <button class="btn bg" style="margin-top:.75rem" onclick="calcExt()">⚡ Calcular</button>
+    <div id="e-res" class="rp" style="display:none;margin-top:.7rem;"><div class="rtitle">Resultado</div><div id="e-rows"></div></div>
+  </div></div>
+  <div id="ext-t" class="sp"><div class="card">
+    <div class="ct" style="margin-bottom:.8rem;">📊 Tabla de Recargos — SMMLV 2026</div>
+    <div class="tw"><table><thead><tr><th>Tipo</th><th>Recargo</th><th>Factor</th><th>Valor/hora</th><th>Norma</th></tr></thead><tbody>
+      <tr><td>Ordinaria diurna</td><td class="go">Base</td><td class="mn">×1.00</td><td class="gr">$7.296</td><td>Art.158</td></tr>
+      <tr><td>Rec. nocturno</td><td class="go">+35%</td><td class="mn">×1.35</td><td class="gr">$9.850</td><td>Art.168 N°3</td></tr>
+      <tr><td>H.E. Diurna</td><td class="go">+25%</td><td class="mn">×1.25</td><td class="gr">$9.120</td><td>Art.168 N°1</td></tr>
+      <tr><td>H.E. Nocturna</td><td class="go">+75%</td><td class="mn">×1.75</td><td class="gr">$12.768</td><td>Art.168 N°2</td></tr>
+      <tr><td>Dom/Fest. diurno</td><td class="go">+75%</td><td class="mn">×1.75</td><td class="gr">$12.768</td><td>Art.179</td></tr>
+      <tr><td>Dom/Fest. nocturno</td><td class="go">+110%</td><td class="mn">×2.10</td><td class="gr">$15.322</td><td>Art.179</td></tr>
+      <tr><td>H.E. Dom/Fest. D.</td><td class="go">+100%</td><td class="mn">×2.00</td><td class="gr">$14.592</td><td>Art.171</td></tr>
+      <tr><td>H.E. Dom/Fest. N.</td><td class="go">+150%</td><td class="mn">×2.50</td><td class="gr">$18.240</td><td>Art.171</td></tr>
+    </tbody></table></div>
+  </div></div>
+  <div id="ext-h" class="sp"><div class="card">
+    <div class="ct" style="margin-bottom:.8rem;">🕐 Horarios Colombia</div>
+    <div class="tw"><table><thead><tr><th>Período</th><th>Horario</th><th>Días</th><th>Recargo</th></tr></thead><tbody>
+      <tr><td>Diurno ordinario</td><td class="mn">06:00–21:00</td><td>Lun–Sáb</td><td class="go">0%</td></tr>
+      <tr><td>Nocturno</td><td class="mn">21:00–06:00</td><td>Lun–Sáb</td><td class="go">+35%</td></tr>
+      <tr><td>Dom/Fest. diurno</td><td class="mn">06:00–21:00</td><td>Dom/Fest.</td><td class="go">+75%</td></tr>
+      <tr><td>Dom/Fest. nocturno</td><td class="mn">21:00–06:00</td><td>Dom/Fest.</td><td class="go">+110%</td></tr>
+      <tr><td>H.E. diurna</td><td class="mn">Supera jornada</td><td>Lun–Sáb</td><td class="rd">+25%</td></tr>
+      <tr><td>H.E. nocturna</td><td class="mn">Extras nocturnas</td><td>Lun–Sáb</td><td class="rd">+75%</td></tr>
+      <tr><td>H.E. dom/fest. D.</td><td class="mn">Extras dom/fest.</td><td>Dom/Fest.</td><td class="rd">+100%</td></tr>
+      <tr><td>H.E. dom/fest. N.</td><td class="mn">Extras noct. dom.</td><td>Dom/Fest.</td><td class="rd">+150%</td></tr>
+    </tbody></table></div>
+  </div></div>
+</div>
+
+<!-- PRESTACIONES -->
+<div id="pres" class="sec">
+  <div class="stabs">
+    <button class="stab active" onclick="showSub(this,'pr-ces')">💰 Cesantías</button>
+    <button class="stab" onclick="showSub(this,'pr-pri')">🎁 Prima</button>
+    <button class="stab" onclick="showSub(this,'pr-vac')">🏖️ Vacaciones</button>
+    <button class="stab" onclick="showSub(this,'pr-liq')">📋 Liquidación</button>
+  </div>
+  <div id="pr-ces" class="sp active"><div class="card">
+    <div class="ct" style="margin-bottom:.9rem;">💰 Cesantías e Intereses <span class="ltag">Art.249–253</span></div>
+    <div class="fg">
+      <div class="fr"><label>Salario ($)</label><input type="number" id="c-sal" value="1750905"/></div>
+      <div class="fr"><label>Aux. Transporte</label><select id="c-aux"><option value="249095">Sí ($249.095)</option><option value="0">No</option></select></div>
+      <div class="fr"><label>Días laborados (máx 360)</label><input type="number" id="c-dias" value="360" max="360"/></div>
+      <div class="fr"><label>Prom. H.Extras/mes ($)</label><input type="number" id="c-hex" value="0"/></div>
+    </div>
+    <button class="btn bg" style="margin-top:.75rem" onclick="calcCes()">⚡ Calcular</button>
+    <div id="c-res" class="rp" style="display:none;margin-top:.7rem;"><div class="rtitle">Cesantías</div><div id="c-rows"></div></div>
+    <div class="ib"><strong>Vence:</strong> 15 de febrero · <strong>Intereses:</strong> 12% anual proporcional</div>
+  </div></div>
+  <div id="pr-pri" class="sp"><div class="card">
+    <div class="ct" style="margin-bottom:.9rem;">🎁 Prima de Servicios <span class="ltag">Art.306</span></div>
+    <div class="fg">
+      <div class="fr"><label>Salario ($)</label><input type="number" id="p-sal" value="1750905"/></div>
+      <div class="fr"><label>Aux. Transporte</label><select id="p-aux"><option value="249095">Sí ($249.095)</option><option value="0">No</option></select></div>
+      <div class="fr"><label>Días semestre (máx 180)</label><input type="number" id="p-dias" value="180" max="180"/></div>
+      <div class="fr"><label>Prom. H.Extras/mes ($)</label><input type="number" id="p-hex" value="0"/></div>
+    </div>
+    <button class="btn bg" style="margin-top:.75rem" onclick="calcPri()">⚡ Calcular</button>
+    <div id="p-res" class="rp" style="display:none;margin-top:.7rem;"><div class="rtitle">Prima</div><div id="p-rows"></div></div>
+    <div class="ib"><strong>Pagos:</strong> 30 de junio · 20 de diciembre</div>
+  </div></div>
+  <div id="pr-vac" class="sp"><div class="card">
+    <div class="ct" style="margin-bottom:.9rem;">🏖️ Vacaciones <span class="ltag">Art.186–190</span></div>
+    <div class="fg">
+      <div class="fr"><label>Salario ($)</label><input type="number" id="v-sal" value="1750905"/></div>
+      <div class="fr"><label>Días laborados</label><input type="number" id="v-dias" value="360"/></div>
+      <div class="fr"><label>Modalidad</label><select id="v-tipo"><option value="d">Disfrute (15 días)</option><option value="c">Compensación</option></select></div>
+    </div>
+    <button class="btn bg" style="margin-top:.75rem" onclick="calcVac()">⚡ Calcular</button>
+    <div id="v-res" class="rp" style="display:none;margin-top:.7rem;"><div class="rtitle">Vacaciones</div><div id="v-rows"></div></div>
+    <div class="ib"><strong>Base:</strong> Solo salario básico, sin auxilio transporte (Art. 192 CST)</div>
+  </div></div>
+  <div id="pr-liq" class="sp"><div class="card">
+    <div class="ct" style="margin-bottom:.9rem;">📋 Liquidación Total del Contrato</div>
+    <div class="fg">
+      <div class="fr"><label>Salario ($)</label><input type="number" id="l-sal" value="1750905"/></div>
+      <div class="fr"><label>Aux. Transporte</label><select id="l-aux"><option value="249095">Sí</option><option value="0">No</option></select></div>
+      <div class="fr"><label>Días a liquidar</label><input type="number" id="l-dias" value="180"/></div>
+      <div class="fr"><label>Tipo de retiro</label><select id="l-tipo"><option>Sin justa causa</option><option>Renuncia voluntaria</option><option>Mutuo acuerdo</option></select></div>
+      <div class="fr"><label>Días indemnización</label><input type="number" id="l-ind" value="0" min="0"/></div>
+    </div>
+    <button class="btn bg" style="margin-top:.75rem" onclick="calcLiq()">⚡ Calcular</button>
+    <div id="l-res" class="rp" style="display:none;margin-top:.7rem;"><div class="rtitle">Liquidación</div><div id="l-rows"></div></div>
+    <div class="ib"><strong>Art. 64:</strong> ≤10 SMMLV: 30 días × 1er año + 20 días × años adicionales</div>
+  </div></div>
+</div>
+
+<!-- SEG. SOCIAL -->
+<div id="ss" class="sec">
+  <div class="card">
+    <div class="ch"><div class="ct">🛡️ Seguridad Social & Parafiscales <span class="ltag">Ley 100/1993</span></div></div>
+    <div class="fg">
+      <div class="fr"><label>Salario Mensual ($)</label><input type="number" id="s-sal" value="1750905"/></div>
+      <div class="fr"><label>Tipo</label><select id="s-tipo"><option value="d">Dependiente</option><option value="i">Independiente</option></select></div>
+      <div class="fr"><label>Nivel ARL</label><select id="s-arl">
+        <option value="0.00522">Riesgo I — 0.522% (oficinas)</option><option value="0.01044">Riesgo II — 1.044%</option>
+        <option value="0.02436">Riesgo III — 2.436%</option><option value="0.04350">Riesgo IV — 4.350%</option>
+        <option value="0.06960">Riesgo V — 6.960%</option>
+      </select></div>
+    </div>
+    <button class="btn bg" style="margin-top:.75rem" onclick="calcSS()">⚡ Calcular</button>
+    <div id="s-res" class="rp" style="display:none;margin-top:.7rem;"><div class="rtitle">Aportes</div><div id="s-rows"></div></div>
+    <div class="ib"><strong>PILA:</strong> Primeros 10 días hábiles del mes siguiente · Base mín. = 1 SMMLV</div>
+  </div>
+</div>
+
+<!-- MODAL EMPLEADO -->
+<div class="mo" id="modal-emp">
+  <div class="md">
+    <div class="mdt">👤 Registro de Empleado</div>
+    <input type="hidden" id="emp-id"/>
+    <div class="fg">
+      <div class="fr"><label>Nombre Completo *</label><input type="text" id="em-nom" placeholder="Juan Pérez García"/></div>
+      <div class="fr"><label>Cédula *</label><input type="text" id="em-ced" placeholder="10.000.000"/></div>
+      <div class="fr"><label>Cargo *</label><input type="text" id="em-car" placeholder="Auxiliar Administrativo"/></div>
+      <div class="fr"><label>Departamento</label><input type="text" id="em-dep" placeholder="Administración"/></div>
+      <div class="fr"><label>Salario ($) *</label><input type="number" id="em-sal" value="1750905"/></div>
+      <div class="fr"><label>Tipo Contrato</label><select id="em-con"><option>Termino indefinido</option><option>Termino fijo</option><option>Obra o labor</option><option>Aprendizaje</option></select></div>
+      <div class="fr"><label>Fecha Ingreso</label><input type="date" id="em-ing"/></div>
+      <div class="fr"><label>Correo Electrónico</label><input type="email" id="em-cor" placeholder="juan@empresa.com"/></div>
+      <div class="fr"><label>Teléfono</label><input type="tel" id="em-tel" placeholder="3001234567"/></div>
+      <div class="fr"><label>Nivel ARL</label><select id="em-arl"><option value="0.00522">Riesgo I</option><option value="0.01044">Riesgo II</option><option value="0.02436">Riesgo III</option><option value="0.04350">Riesgo IV</option><option value="0.06960">Riesgo V</option></select></div>
+    </div>
+    <div class="mda">
+      <button class="btn bo" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn bg" onclick="guardarEmp()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:1rem;color:var(--ink3);font-size:.65rem;border-top:1px solid var(--bor);font-family:var(--fm);">
+  <strong style="color:var(--gold)">NóminaCO Pro 2026</strong> · Decreto 1469/2025 · CST · Ley 100/1993 · Solo orientativo
+</footer>
+
+<script>
+const SMMLV=1750905, AUX_T=249095;
+const fmt=v=>'$'+Math.round(parseFloat(v)||0).toLocaleString('es-CO');
+const fmtM=m=>{if(!m)return'—';const[y,mo]=m.split('-');return['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][+mo-1]+' '+y;};
+const hoy=()=>new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
+const clean=s=>(s||'').replace(/[^\x20-\x7E]/g,c=>{const m={'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U','ñ':'n','Ñ':'N','ü':'u','ú':'u','¿':'','¡':''};return m[c]||'';});
+
+let emps =JSON.parse(localStorage.getItem('nc26_emps') ||'[]');
+let hists=JSON.parse(localStorage.getItem('nc26_hists')||'[]');
+let cfg  =JSON.parse(localStorage.getItem('nc26_cfg')  ||'{}');
+let col  =null; // nómina activa
+
+/* NAV */
+function goSec(id,btn,isDesktop){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  const sec=document.getElementById(id);
+  if(sec) sec.classList.add('active');
+
+  // update desktop nav
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  // update bottom nav
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  const navMap={'dash':0,'emps':1,'nom':2,'hist':3};
+  if(id in navMap){
+    const items=document.querySelectorAll('.bn-item');
+    if(items[navMap[id]]) items[navMap[id]].classList.add('active');
+  }
+
+  // close more modal if open
+  closeMore();
+
+  if(id==='emps'){renderEmps();}
+  if(id==='hist'){renderHist();}
+  if(id==='dash'){updateStats();}
+  if(id==='nom'){syncSel();}
+  if(id==='cfg'){cargarCfg();}
+  updateBadges();
+}
+function showSub(btn,id){
+  const sec=btn.closest('.sec');
+  sec.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  sec.querySelectorAll('.sp').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active'); document.getElementById(id).classList.add('active');
+}
+
+/* CONFIG */
+function cargarCfg(){
+  ['nom','nit','dir','ciu','tel','cor'].forEach(k=>document.getElementById('cfg-'+k).value=cfg[k]||'');
+}
+function guardarCfg(){
+  cfg=['nom','nit','dir','ciu','tel','cor'].reduce((o,k)=>{o[k]=document.getElementById('cfg-'+k).value.trim();return o;},{});
+  localStorage.setItem('nc26_cfg',JSON.stringify(cfg));
+  const ok=document.getElementById('cfg-ok'); ok.style.display='inline';
+  setTimeout(()=>ok.style.display='none',2500);
+}
+
+/* MODAL */
+function abrirModal(id){
+  if(id){
+    const e=emps.find(x=>x.id===id); if(!e)return;
+    document.getElementById('emp-id').value=e.id;
+    ['nom','ced','car','dep','cor','tel'].forEach(k=>document.getElementById('em-'+k).value=e[k]||'');
+    document.getElementById('em-sal').value=e.sal; document.getElementById('em-con').value=e.con;
+    document.getElementById('em-ing').value=e.ing||''; document.getElementById('em-arl').value=e.arl||'0.00522';
+  } else {
+    document.getElementById('emp-id').value='';
+    ['nom','ced','car','dep','cor','tel'].forEach(k=>document.getElementById('em-'+k).value='');
+    document.getElementById('em-sal').value=SMMLV;
+    document.getElementById('em-ing').value=new Date().toISOString().split('T')[0];
+  }
+  document.getElementById('modal-emp').classList.add('open');
+}
+function cerrarModal(){document.getElementById('modal-emp').classList.remove('open');}
+document.getElementById('modal-emp').addEventListener('click',e=>{if(e.target===e.currentTarget)cerrarModal();});
+
+function guardarEmp(){
+  const nom=document.getElementById('em-nom').value.trim();
+  const ced=document.getElementById('em-ced').value.trim();
+  const car=document.getElementById('em-car').value.trim();
+  if(!nom||!ced||!car){alert('Nombre, Cédula y Cargo son obligatorios.');return;}
+  const eId=document.getElementById('emp-id').value;
+  const emp={id:eId||Date.now().toString(),nom,ced,car,
+    dep:document.getElementById('em-dep').value.trim(),
+    sal:+document.getElementById('em-sal').value||SMMLV,
+    con:document.getElementById('em-con').value,
+    ing:document.getElementById('em-ing').value,
+    cor:document.getElementById('em-cor').value.trim(),
+    tel:document.getElementById('em-tel').value.trim(),
+    arl:document.getElementById('em-arl').value,
+  };
+  if(eId){const i=emps.findIndex(e=>e.id===eId);if(i>=0)emps[i]=emp;}else emps.push(emp);
+  localStorage.setItem('nc26_emps',JSON.stringify(emps));
+  cerrarModal(); renderEmps(); syncSel(); updateStats();
+}
+
+function renderEmps(){
+  document.getElementById('cnt-emp').textContent=emps.length;
+  const tb=document.getElementById('emp-tb');
+  if(!emps.length){tb.innerHTML=`<tr><td colspan="8"><div class="es"><p>👤<br/>Sin empleados.<br/>Clic en "+ Nuevo Empleado".</p></div></td></tr>`;return;}
+  tb.innerHTML=emps.map(e=>`<tr>
+    <td><strong>${e.nom}</strong></td><td class="mn">${e.ced}</td><td>${e.car}</td>
+    <td>${e.dep||'—'}</td><td class="gr">${fmt(e.sal)}</td><td>${e.con}</td><td>${e.cor||'—'}</td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap;">
+      <button class="btn bo bsm" onclick="abrirModal('${e.id}')">✏️</button>
+      <button class="btn bg bsm" onclick="irLiquidar('${e.id}')">📋</button>
+      <button class="btn br bsm" onclick="elimEmp('${e.id}')">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function elimEmp(id){if(!confirm('¿Eliminar?'))return;emps=emps.filter(e=>e.id!==id);localStorage.setItem('nc26_emps',JSON.stringify(emps));renderEmps();syncSel();updateStats();}
+
+function irLiquidar(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nom').classList.add('active');
+  document.querySelectorAll('.nb')[3].classList.add('active');
+  syncSel(); setTimeout(()=>{document.getElementById('n-emp').value=id;cargarEmp();},80);
+}
+
+function syncSel(){
+  const sel=document.getElementById('n-emp'); const cur=sel.value;
+  sel.innerHTML='<option value="">— Seleccionar —</option>'+emps.map(e=>`<option value="${e.id}">${e.nom} · CC ${e.ced}</option>`).join('');
+  if(cur)sel.value=cur;
+}
+
+function cargarEmp(){
+  const id=document.getElementById('n-emp').value; if(!id)return;
+  const e=emps.find(x=>x.id===id); if(!e)return;
+  document.getElementById('n-sal').value=e.sal;
+  document.getElementById('n-aux').value=e.sal<=2*SMMLV?'1':'0';
+  calcLive();
+}
+
+/* CÁLCULO EN TIEMPO REAL */
+function calcLive(){
+  const sal=+document.getElementById('n-sal').value||0;
+  const dias=+document.getElementById('n-dias').value||30;
+  const aux=+document.getElementById('n-aux').value;
+  const hxd=+document.getElementById('n-hxd').value||0;
+  const hxn=+document.getElementById('n-hxn').value||0;
+  const hxdf=+document.getElementById('n-hxdf').value||0;
+  const hxdfn=+document.getElementById('n-hxdfn').value||0;
+  const rn=+document.getElementById('n-rn').value||0;
+  const dom=+document.getElementById('n-dom').value||0;
+  const oing=+document.getElementById('n-oing').value||0;
+  const ret=+document.getElementById('n-ret').value||0;
+  const oded=+document.getElementById('n-oded').value||0;
+  const aus=+document.getElementById('n-aus').value||0;    // ausencia injustificada
+  const inc=+document.getElementById('n-inc').value||0;    // incapacidad cargo empresa
+  const per2=+document.getElementById('n-per2').value||0;  // permiso no remunerado
+
+  const h=sal/240;
+  const salProp=sal*dias/30;
+  const auxVal=aux?AUX_T*dias/30:0;
+  const vHxd=hxd*h*0.25, vHxn=hxn*h*0.75, vHxdf=hxdf*h*1.00, vHxdfn=hxdfn*h*1.50;
+  const vRn=rn*h*0.35, vDom=dom*h*0.75;
+
+  const ibc=salProp+vHxd+vHxn+vHxdf+vHxdfn+vRn+vDom+oing; // SIN auxilio transporte
+  const sSal=ibc*0.04, sPen=ibc*0.04;
+  const devengado=salProp+auxVal+vHxd+vHxn+vHxdf+vHxdfn+vRn+vDom+oing;
+  const totalDed=sSal+sPen+ret+oded+totalDescDias;
+  const neto=devengado-totalDed;
+
+  const empId=document.getElementById('n-emp').value;
+  const emp=emps.find(e=>e.id===empId)||null;
+  const per=document.getElementById('n-per').value;
+
+  col={emp,per,sal,dias,auxVal,hxd,hxn,hxdf,hxdfn,rn,dom,oing,ret,oded,
+       aus,inc,per2,descAus,descInc,descPer2,totalDescDias,
+       salProp,vHxd,vHxn,vHxdf,vHxdfn,vRn,vDom,ibc,sSal,sPen,devengado,totalDed,neto};
+
+  const rows=[
+    {l:`Salario proporcional (${dias}/30 dias)`,v:fmt(salProp),c:'pos'},
+    {l:'Auxilio de transporte',v:fmt(auxVal),c:auxVal?'pos':'neu'},
+    {l:`H.E. Diurnas (${hxd}h x+25%)`,v:fmt(vHxd),c:'pos'},
+    {l:`H.E. Nocturnas (${hxn}h x+75%)`,v:fmt(vHxn),c:'pos'},
+    {l:`H.E. Dom/Fest. D. (${hxdf}h x+100%)`,v:fmt(vHxdf),c:'pos'},
+    {l:`H.E. Dom/Fest. N. (${hxdfn}h x+150%)`,v:fmt(vHxdfn),c:'pos'},
+    {l:`Rec. Nocturno (${rn}h x+35%)`,v:fmt(vRn),c:'pos'},
+    {l:`Dom/Festivos (${dom}h x+75%)`,v:fmt(vDom),c:'pos'},
+    {l:'Otros ingresos',v:fmt(oing),c:'pos'},
+    {l:'TOTAL DEVENGADO',v:fmt(devengado),c:'acc'},
+    {l:`IBC = ${fmt(ibc)} (sin aux. trans.)`,v:'',c:'neu'},
+    {l:'(-) Salud 4% sobre IBC',v:fmt(-sSal),c:'neg'},
+    {l:'(-) Pension 4% sobre IBC',v:fmt(-sPen),c:'neg'},
+    {l:'(-) Retencion en la fuente',v:fmt(-ret),c:'neg'},
+    {l:'(-) Otras deducciones',v:fmt(-oded),c:'neg'},
+    {l:'TOTAL DEDUCCIONES',v:fmt(-totalDed),c:'neg'},
+    {l:'NETO A PAGAR',v:fmt(neto),tot:true},
+  ];
+  document.getElementById('n-rows').innerHTML=rows.map(r=>`
+    <div class="rrow${r.tot?' tot':''}">
+      <span class="rl">${r.l}</span>
+      <span class="rv ${r.c||'acc'}">${r.v}</span>
+    </div>`).join('');
+}
+
+function resetNom(){
+  ['n-hxd','n-hxn','n-hxdf','n-hxdfn','n-rn','n-dom','n-oing','n-ret','n-oded','n-aus','n-inc','n-per2'].forEach(id=>document.getElementById(id).value=0);
+  document.getElementById('n-sal').value=SMMLV; document.getElementById('n-dias').value=30;
+  document.getElementById('n-emp').value=''; calcLive();
+  document.getElementById('correo-tip').classList.remove('show');
+}
+
+/* ════════════════════════════════════════════
+   GENERADOR DE PDF CON jsPDF
+   Desprendible tipo colilla con línea de corte
+════════════════════════════════════════════ */
+function crearPDF(c){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  const PW=210, PH=297;
+  const ML=14, MR=14, CW=PW-ML-MR; // márgenes y ancho de contenido
+  let y=14;
+
+  // Colores como arrays RGB
+  const NEGRO=[26,22,18], ORO=[232,176,32], CREMA=[244,241,235], CREMA2=[236,232,223];
+  const VERDE=[26,92,56], ROJO=[184,48,48], GRIS=[138,128,120], BORDE=[213,208,196];
+  const BLANCO=[255,255,255];
+
+  const empresa=clean(cfg.nom||'Mi Empresa');
+  const nit=clean(cfg.nit||'');
+  const per=fmtM(c.per);
+  const fecha=hoy();
+  const emp=c.emp||{};
+  const nom=clean(emp.nom||'Sin nombre');
+  const ced=clean(emp.ced||'—');
+  const car=clean(emp.car||'—');
+  const dep=clean(emp.dep||'—');
+  const con=clean(emp.con||'—');
+  const cor=clean(emp.cor||'—');
+
+  // ─── helpers ───
+  const setFill=rgb=>doc.setFillColor(rgb[0],rgb[1],rgb[2]);
+  const setTxt=rgb=>doc.setTextColor(rgb[0],rgb[1],rgb[2]);
+  const setDraw=rgb=>doc.setDrawColor(rgb[0],rgb[1],rgb[2]);
+  const box=(x,y,w,h,fill,stroke)=>{
+    if(fill){setFill(fill);doc.rect(x,y,w,h,'F');}
+    if(stroke){setDraw(stroke);doc.setLineWidth(.3);doc.rect(x,y,w,h,'S');}
+  };
+  const txt=(t,x,y,opts={})=>{
+    doc.setFont('helvetica',opts.bold?'bold':'normal');
+    doc.setFontSize(opts.size||9);
+    setTxt(opts.color||NEGRO);
+    if(opts.align==='right') doc.text(t,x,y,{align:'right'});
+    else if(opts.align==='center') doc.text(t,x,y,{align:'center'});
+    else doc.text(t,x,y);
+  };
+  const fmtN=v=>{const n=Math.round(parseFloat(v)||0);return'$'+Math.abs(n).toLocaleString('es-CO')+(n<0?' (-)':'');};
+  const fmtVal=v=>{const n=Math.round(parseFloat(v)||0);return(n<0?'(':'')+'$'+Math.abs(n).toLocaleString('es-CO')+(n<0?')':'');};
+
+  // ════════════════════════════════════════
+  // BLOQUE EMPRESA
+  // ════════════════════════════════════════
+  // Encabezado negro
+  box(ML,y,CW,16,NEGRO);
+  txt(empresa,ML+4,y+6,{bold:true,size:13,color:BLANCO});
+  if(nit) txt('NIT: '+nit,ML+4,y+11,{size:7.5,color:ORO});
+  txt('COLILLA DE PAGO',ML+CW-4,y+5,{bold:true,size:9,color:ORO,align:'right'});
+  txt('Periodo: '+per,ML+CW-4,y+10,{size:7.5,color:BLANCO,align:'right'});
+  txt('Emision: '+clean(fecha),ML+CW-4,y+14.5,{size:6.5,color:GRIS,align:'right'});
+  y+=16;
+
+  // Grid datos empleado
+  box(ML,y,CW,18,CREMA2,BORDE);
+  const cw3=CW/3;
+  const datos=[[nom,'Nombre completo'],[ced,'Cedula'],[car,'Cargo'],[dep,'Departamento'],[con,'Tipo contrato'],[cor,'Correo']];
+  datos.forEach(([val,lbl],i)=>{
+    const col=i%3, row=Math.floor(i/3);
+    const cx=ML+col*cw3+3, cy=y+3+row*8.5;
+    txt(lbl,cx,cy,{size:6,color:GRIS});
+    txt(val.length>28?val.slice(0,26)+'...':val,cx,cy+4,{bold:true,size:8,color:NEGRO});
+  });
+  y+=18+1;
+
+  // Cabeceras de columnas
+  box(ML,y,CW/2-.5,6,NEGRO); box(ML+CW/2+.5,y,CW/2-.5,6,NEGRO);
+  txt('+ DEVENGADOS',ML+3,y+4.3,{bold:true,size:7,color:ORO});
+  txt('- DEDUCCIONES',ML+CW/2+3.5,y+4.3,{bold:true,size:7,color:ORO});
+  y+=6;
+
+  // Filas conceptos
+  const devs=[[`Salario prop. (${c.dias}/30 d)`,c.salProp]];
+  if(c.auxVal)   devs.push(['Auxilio transporte',c.auxVal]);
+  if(c.vHxd)     devs.push([`H.E. Diurnas (${c.hxd}h +25%)`,c.vHxd]);
+  if(c.vHxn)     devs.push([`H.E. Nocturnas (${c.hxn}h +75%)`,c.vHxn]);
+  if(c.vHxdf)    devs.push([`H.E. Dom/F.D. (${c.hxdf}h +100%)`,c.vHxdf]);
+  if(c.vHxdfn)   devs.push([`H.E. Dom/F.N. (${c.hxdfn}h +150%)`,c.vHxdfn]);
+  if(c.vRn)      devs.push([`Rec.Nocturno (${c.rn}h +35%)`,c.vRn]);
+  if(c.vDom)     devs.push([`Dom/Festivos (${c.dom}h +75%)`,c.vDom]);
+  if(c.oing)     devs.push(['Otros ingresos',c.oing]);
+
+  const deds=[[`Salud empl. (4% IBC)`,c.sSal],[`Pension empl. (4% IBC)`,c.sPen]];
+  if(c.ret)  deds.push(['Retencion fuente',c.ret]);
+  if(c.oded) deds.push(['Otras deducciones',c.oded]);
+
+  const maxR=Math.max(devs.length,deds.length);
+  const fh=5.5;
+  for(let i=0;i<maxR;i++){
+    const bg=i%2===0?BLANCO:CREMA;
+    box(ML,y,CW/2-.5,fh,bg); box(ML+CW/2+.5,y,CW/2-.5,fh,bg);
+    if(devs[i]){
+      txt(devs[i][0],ML+2,y+fh-1.5,{size:7,color:[74,68,60]});
+      txt(fmtN(devs[i][1]),ML+CW/2-.5-2,y+fh-1.5,{size:7,bold:true,color:VERDE,align:'right'});
+    }
+    if(deds[i]){
+      txt(deds[i][0],ML+CW/2+2.5,y+fh-1.5,{size:7,color:[74,68,60]});
+      txt('('+fmtN(deds[i][1])+')',ML+CW-2,y+fh-1.5,{size:7,bold:true,color:ROJO,align:'right'});
+    }
+    y+=fh;
+  }
+
+  // Subtotales
+  box(ML,y,CW/2-.5,7,CREMA2,BORDE); box(ML+CW/2+.5,y,CW/2-.5,7,CREMA2,BORDE);
+  txt('TOTAL DEVENGADO',ML+2,y+5,{bold:true,size:7.5,color:NEGRO});
+  txt(fmtN(c.devengado),ML+CW/2-.5-2,y+5,{bold:true,size:7.5,color:VERDE,align:'right'});
+  txt('TOTAL DEDUCCIONES',ML+CW/2+2.5,y+5,{bold:true,size:7.5,color:NEGRO});
+  txt('('+fmtN(c.totalDed)+')',ML+CW-2,y+5,{bold:true,size:7.5,color:ROJO,align:'right'});
+  y+=7+1;
+
+  // IBC info
+  txt(`IBC (base SS): ${fmt(c.ibc)} — Salud 4%: ${fmt(c.sSal)} — Pension 4%: ${fmt(c.sPen)} — No incluye aux.transporte`,ML,y,{size:6,color:GRIS});
+  y+=4;
+
+  // NETO A PAGAR
+  box(ML,y,CW,12,NEGRO);
+  txt('NETO A PAGAR',ML+4,y+7.5,{bold:true,size:13,color:BLANCO});
+  txt(fmt(c.neto),ML+CW-4,y+8,{bold:true,size:16,color:ORO,align:'right'});
+  y+=12+2;
+
+  // Firma empleador
+  doc.setDrawColor(26,22,18); doc.setLineWidth(.6);
+  doc.line(ML+CW-55,y,ML+CW,y);
+  txt('Firma y Sello Empleador',ML+CW,y+4,{size:7,color:GRIS,align:'right'});
+  y+=10;
+
+  // ════════════════════════════════════════
+  // LÍNEA DE CORTE
+  // ════════════════════════════════════════
+  doc.setDrawColor(138,128,120); doc.setLineWidth(.4);
+  doc.setLineDashPattern([3,2],0);
+  doc.line(ML,y,ML+CW,y);
+  doc.setLineDashPattern([],0);
+  txt('--- LINEA DE CORTE --- PARTE INFERIOR: CONSERVAR EMPLEADO ---',PW/2,y+4,{size:7,color:GRIS,align:'center'});
+  y+=8;
+
+  // ════════════════════════════════════════
+  // DESPRENDIBLE EMPLEADO
+  // ════════════════════════════════════════
+  // Encabezado dorado
+  box(ML,y,CW,15,[176,125,16]);
+  txt('DESPRENDIBLE DEL EMPLEADO',ML+4,y+5.5,{bold:true,size:11,color:BLANCO});
+  txt(nom,ML+4,y+11,{bold:true,size:9,color:NEGRO});
+  txt('Periodo: '+per,ML+CW-4,y+5.5,{size:8,color:BLANCO,align:'right'});
+  txt(empresa,ML+CW-4,y+11,{size:7.5,color:NEGRO,align:'right'});
+  y+=15;
+
+  // Mini encabezado tabla
+  box(ML,y,CW,5.5,NEGRO);
+  txt('CONCEPTO',ML+2,y+4,{size:6.5,color:ORO,bold:true});
+  txt('VALOR',ML+CW-2,y+4,{size:6.5,color:ORO,bold:true,align:'right'});
+  y+=5.5;
+
+  // Todas las filas compactas
+  const allRows=[
+    {l:`Salario prop. (${c.dias}/30 dias)`,v:c.salProp,t:'p'},
+    ...(c.auxVal?[{l:'Auxilio transporte',v:c.auxVal,t:'p'}]:[]),
+    ...(c.vHxd?[{l:`H.E. Diurnas (${c.hxd}h +25%)`,v:c.vHxd,t:'p'}]:[]),
+    ...(c.vHxn?[{l:`H.E. Nocturnas (${c.hxn}h +75%)`,v:c.vHxn,t:'p'}]:[]),
+    ...(c.vHxdf?[{l:`H.E. Dom/F.D. (${c.hxdf}h +100%)`,v:c.vHxdf,t:'p'}]:[]),
+    ...(c.vHxdfn?[{l:`H.E. Dom/F.N. (${c.hxdfn}h +150%)`,v:c.vHxdfn,t:'p'}]:[]),
+    ...(c.vRn?[{l:`Rec.Nocturno (${c.rn}h +35%)`,v:c.vRn,t:'p'}]:[]),
+    ...(c.vDom?[{l:`Dom/Festivos (${c.dom}h +75%)`,v:c.vDom,t:'p'}]:[]),
+    ...(c.oing?[{l:'Otros ingresos',v:c.oing,t:'p'}]:[]),
+    {l:'TOTAL DEVENGADO',v:c.devengado,t:'tot'},
+    {l:`Salud empl. (4% IBC)`,v:-c.sSal,t:'n'},
+    {l:`Pension empl. (4% IBC)`,v:-c.sPen,t:'n'},
+    ...(c.ret?[{l:'Retencion fuente',v:-c.ret,t:'n'}]:[]),
+    ...(c.oded?[{l:'Otras deducciones',v:-c.oded,t:'n'}]:[]),
+    ...(c.descAus?[{l:`Ausencia injust.(${c.aus}d)`,v:-c.descAus,t:'n'}]:[]),
+    ...(c.descInc?[{l:`Incapacidad empl.(${c.inc}d)`,v:-c.descInc,t:'n'}]:[]),
+    ...(c.descPer2?[{l:`Permiso no remun.(${c.per2}d)`,v:-c.descPer2,t:'n'}]:[]),
+    {l:'TOTAL DEDUCCIONES',v:-c.totalDed,t:'tot'},
+  ];
+
+  const fh2=5;
+  allRows.forEach((r,i)=>{
+    const bgC=r.t==='tot'?CREMA2:(i%2===0?BLANCO:CREMA);
+    box(ML,y,CW,fh2,bgC);
+    doc.setDrawColor(213,208,196); doc.setLineWidth(.2); doc.line(ML,y+fh2,ML+CW,y+fh2);
+    const valColor=r.t==='p'?VERDE:r.t==='n'?ROJO:NEGRO;
+    txt(r.l,ML+2,y+fh2-1.2,{size:r.t==='tot'?7.5:7,bold:r.t==='tot',color:r.t==='tot'?NEGRO:[74,68,60]});
+    txt(fmtVal(r.v),ML+CW-2,y+fh2-1.2,{size:r.t==='tot'?7.5:7,bold:r.t==='tot',color:valColor,align:'right'});
+    y+=fh2;
+  });
+
+  y+=1;
+  // Neto empleado
+  box(ML,y,CW,11,NEGRO);
+  txt('NETO A PAGAR',ML+4,y+7,{bold:true,size:11,color:BLANCO});
+  txt(fmt(c.neto),ML+CW-4,y+7.5,{bold:true,size:14,color:ORO,align:'right'});
+  y+=11+4;
+
+  // Firma empleado
+  doc.setDrawColor(26,22,18); doc.setLineWidth(.6);
+  doc.line(ML,y,ML+60,y);
+  txt('Firma Empleado — Recibido conforme',ML,y+4,{size:7,color:GRIS});
+
+  // IBC mini
+  txt(`IBC: ${fmt(c.ibc)} | Salud 4%: ${fmt(c.sSal)} | Pension 4%: ${fmt(c.sPen)}`,ML+CW,y+4,{size:6,color:GRIS,align:'right'});
+  y+=12;
+
+  // Footer
+  txt('NominaC O Pro 2026 | Decreto 1469/2025 | Art.127 CST | Ley 100/1993 | Solo orientativo — consulte un contador',PW/2,PH-8,{size:6,color:GRIS,align:'center'});
+
+  return doc;
+}
+
+function setPst(tipo,msg){
+  const el=document.getElementById('pst');
+  const ic=document.getElementById('pst-ic');
+  const ms=document.getElementById('pst-msg');
+  el.className='pst show '+tipo;
+  ic.textContent=tipo==='ok'?'✓':tipo==='err'?'✗':'⏳';
+  ms.textContent=msg;
+}
+
+function descargarPDF(c){
+  try {
+    const doc=crearPDF(c);
+    const emp=c.emp||{};
+    const nombre=(emp.nom||'empleado').replace(/\s+/g,'_').toLowerCase();
+    const per=(c.per||'2026').replace('-','_');
+    doc.save(`colilla_${nombre}_${per}.pdf`);
+    setPst('ok','PDF descargado correctamente en tu carpeta de Descargas');
+    setTimeout(()=>document.getElementById('pst').className='pst',5000);
+    return true;
+  } catch(err) {
+    console.error(err);
+    setPst('err','Error al generar el PDF. Intenta de nuevo.');
+    setTimeout(()=>document.getElementById('pst').className='pst',5000);
+    return false;
+  }
+}
+
+function guardarYPDF(){
+  if(!col){return;}
+  guardarEnHist(col);
+  descargarPDF(col);
+}
+
+function soloPDF(){
+  if(!col){return;}
+  descargarPDF(col);
+}
+
+/* CORREO — descarga PDF primero, luego abre mailto */
+function flujoCorreo(){
+  if(!col){return;}
+  // 1. Generar y descargar PDF
+  const ok=descargarPDF(col);
+  // 2. Abrir cliente de correo con mensaje listo
+  const e=col.emp||{};
+  const nom=e.nom||'Colaborador';
+  const cor=e.cor||'';
+  const per=fmtM(col.per);
+  const asunto=encodeURIComponent(`Colilla de Pago - ${nom} - ${per}`);
+  const cuerpo=encodeURIComponent(
+`Estimado/a ${nom},
+
+Adjunto encontrara su colilla de pago correspondiente al periodo ${per}.
+
+RESUMEN:
+ Total Devengado:    ${fmt(col.devengado)}
+ Total Deducciones:  ${fmt(col.totalDed)}
+ NETO A PAGAR:       ${fmt(col.neto)}
+
+Para consultas comuniquese con el area de Recursos Humanos.
+
+Atentamente,
+Departamento de Nomina - ${cfg.nom||'Mi Empresa'}
+--- Generado con NominaC O Pro 2026`);
+
+  setTimeout(()=>window.open(`mailto:${cor}?subject=${asunto}&body=${cuerpo}`),400);
+
+  // 3. Mostrar instrucciones paso a paso
+  document.getElementById('correo-tip').classList.add('show');
+}
+
+/* HISTORIAL */
+function guardarEnHist(c){
+  const reg={id:Date.now().toString(),
+    nom:c.emp?.nom||'Sin empleado',ced:c.emp?.ced||'—',
+    per:c.per,neto:c.neto,devengado:c.devengado,
+    fecha:hoy(),col:JSON.stringify(c)};
+  hists.unshift(reg);
+  localStorage.setItem('nc26_hists',JSON.stringify(hists));
+  renderHist(); updateStats();
+}
+
+function renderHist(){
+  document.getElementById('cnt-hist').textContent=hists.length;
+  const d=document.getElementById('hist-lista');
+  if(!hists.length){d.innerHTML=`<div class="es"><p>📜<br/>Sin nominas guardadas.<br/>Liquida y haz clic en "Guardar + PDF".</p></div>`;return;}
+  d.innerHTML='<div class="hlist">'+hists.map(h=>`
+    <div class="hcard">
+      <div>
+        <div class="hname">${h.nom}</div>
+        <div class="hmeta">CC: ${h.ced} · ${h.fecha}</div>
+        <div class="hact">
+          <button class="btn bk bsm"  onclick='pdfHist("${h.id}")'>📄 PDF</button>
+          <button class="btn bgr bsm" onclick='mailHist("${h.id}")'>✉️ Correo</button>
+          <button class="btn br bsm"  onclick='delHist("${h.id}")'>🗑️</button>
+        </div>
+      </div>
+      <div><div class="hneto">${fmt(h.neto)}</div><div class="hper">${fmtM(h.per)}</div></div>
+    </div>`).join('')+'</div>';
+}
+
+function pdfHist(id){const h=hists.find(x=>x.id===id);if(h)descargarPDF(JSON.parse(h.col));}
+function mailHist(id){
+  const h=hists.find(x=>x.id===id); if(!h)return;
+  const c=JSON.parse(h.col);
+  descargarPDF(c);
+  const e=c.emp||{};
+  const asunto=encodeURIComponent(`Colilla de Pago - ${e.nom||'Colaborador'} - ${fmtM(c.per)}`);
+  const cuerpo=encodeURIComponent(`Estimado/a ${e.nom||'Colaborador'},\n\nAdjunto su colilla de pago del periodo ${fmtM(c.per)}.\n\nNETO A PAGAR: ${fmt(c.neto)}\n\nAtentamente,\n${cfg.nom||'Mi Empresa'}`);
+  setTimeout(()=>window.open(`mailto:${e.cor||''}?subject=${asunto}&body=${cuerpo}`),400);
+  document.getElementById('correo-tip').classList.add('show');
+}
+function delHist(id){if(!confirm('¿Eliminar?'))return;hists=hists.filter(h=>h.id!==id);localStorage.setItem('nc26_hists',JSON.stringify(hists));renderHist();updateStats();}
+function limpiarHist(){if(!confirm('¿Eliminar todo el historial?'))return;hists=[];localStorage.setItem('nc26_hists','[]');renderHist();updateStats();}
+
+function updateStats(){
+  const se=document.getElementById('st-e');
+  const sn=document.getElementById('st-n');
+  const sm=document.getElementById('st-m');
+  const st=document.getElementById('st-t');
+  if(se) se.textContent=emps.length;
+  if(sn) sn.textContent=hists.length;
+  const mes=new Date().toISOString().slice(0,7);
+  if(sm) sm.textContent=fmt(hists.filter(h=>h.per===mes).reduce((a,h)=>a+h.neto,0));
+  if(st) st.textContent=fmt(hists.reduce((a,h)=>a+h.neto,0));
+  updateBadges();
+}
+
+/* CALCULADORAS */
+function brow(rows,rid,rpid){
+  document.getElementById(rid).innerHTML=rows.map(r=>`<div class="rrow${r.t?' tot':''}"><span class="rl">${r.l}</span><span class="rv ${r.c||'acc'}">${r.v}</span></div>`).join('');
+  const rp=document.getElementById(rpid); if(rp)rp.style.display='block';
+}
+function calcExt(){
+  const sal=+document.getElementById('e-sal').value||SMMLV;
+  const tipov=document.getElementById('e-tipo').value;
+  const pct=parseFloat(tipov.replace('b',''))||0.25;
+  const h=+document.getElementById('e-h').value||0;
+  const base=sal/240;
+  brow([{l:'Hora ordinaria',v:fmt(base),c:'neu'},{l:'Recargo',v:(pct*100).toFixed(0)+'%',c:'neu'},
+        {l:`Solo recargo (${h}h)`,v:fmt(base*pct*h),c:'pos'},{l:`PAGO TOTAL (${h}h)`,v:fmt(base*(1+pct)*h),t:true}],'e-rows','e-res');
+}
+function calcCes(){
+  const sal=+document.getElementById('c-sal').value||SMMLV;
+  const aux=+document.getElementById('c-aux').value||0;
+  const dias=+document.getElementById('c-dias').value||360;
+  const hex=+document.getElementById('c-hex').value||0;
+  const base=sal+aux+hex; const ces=base*dias/360; const intc=ces*.12*dias/360;
+  brow([{l:'Base',v:fmt(base),c:'acc'},{l:'Cesantias',v:fmt(ces),c:'pos'},{l:'Intereses 12%',v:fmt(intc),c:'pos'},{l:'TOTAL',v:fmt(ces+intc),t:true}],'c-rows','c-res');
+}
+function calcPri(){
+  const sal=+document.getElementById('p-sal').value||SMMLV;
+  const aux=+document.getElementById('p-aux').value||0;
+  const dias=+document.getElementById('p-dias').value||180;
+  const hex=+document.getElementById('p-hex').value||0;
+  const base=sal+aux+hex;
+  brow([{l:'Base',v:fmt(base),c:'acc'},{l:'Dias',v:dias,c:'neu'},{l:'PRIMA',v:fmt(base*dias/360),t:true}],'p-rows','p-res');
+}
+function calcVac(){
+  const sal=+document.getElementById('v-sal').value||SMMLV;
+  const dias=+document.getElementById('v-dias').value||360;
+  const tipo=document.getElementById('v-tipo').value;
+  const dv=15*dias/360;
+  brow([{l:'Dias causados',v:dv.toFixed(2),c:'acc'},{l:tipo==='d'?'VACACIONES DISFRUTE':'COMPENSACION',v:fmt(sal/30*dv),t:true}],'v-rows','v-res');
+}
+function calcLiq(){
+  const sal=+document.getElementById('l-sal').value||SMMLV;
+  const aux=+document.getElementById('l-aux').value||0;
+  const dias=+document.getElementById('l-dias').value||180;
+  const ind=+document.getElementById('l-ind').value||0;
+  const base=sal+aux; const ces=base*dias/360; const intc=ces*.12*dias/360;
+  const pri=base*dias/360; const vac=sal/30*15*dias/360; const indem=sal/30*ind;
+  brow([{l:'Cesantias',v:fmt(ces),c:'pos'},{l:'Intereses',v:fmt(intc),c:'pos'},{l:'Prima',v:fmt(pri),c:'pos'},
+        {l:'Vacaciones',v:fmt(vac),c:'pos'},{l:`Indemnizacion (${ind}d)`,v:fmt(indem),c:ind>0?'pos':'neu'},
+        {l:'TOTAL',v:fmt(ces+intc+pri+vac+indem),t:true}],'l-rows','l-res');
+}
+function calcSS(){
+  const sal=+document.getElementById('s-sal').value||SMMLV;
+  const tipo=document.getElementById('s-tipo').value;
+  const arl=+document.getElementById('s-arl').value||.00522;
+  const ibc=Math.max(sal,SMMLV);
+  let tS,tP,eS,eP,eA,eSena,eIcbf,eCaj;
+  if(tipo==='d'){tS=ibc*.04;tP=ibc*.04;eS=ibc*.085;eP=ibc*.12;eA=ibc*arl;eSena=ibc*.02;eIcbf=ibc*.03;eCaj=ibc*.04;}
+  else{const bi=ibc*.40;tS=bi*.125;tP=bi*.16;eS=eP=eA=eSena=eIcbf=eCaj=0;}
+  const totT=tS+tP,totE=eS+eP+eA+eSena+eIcbf+eCaj;
+  brow([{l:'IBC',v:fmt(ibc),c:'acc'},{l:'Salud empl.(4%)',v:fmt(tS),c:'neg'},{l:'Pension empl.(4%)',v:fmt(tP),c:'neg'},
+        {l:'Total deduc.empl.',v:fmt(totT),c:'neg'},{l:'Salud empl.(8.5%)',v:fmt(eS),c:'pos'},
+        {l:'Pension empl.(12%)',v:fmt(eP),c:'pos'},{l:`ARL (${(arl*100).toFixed(3)}%)`,v:fmt(eA),c:'pos'},
+        {l:'SENA 2%',v:fmt(eSena),c:'pos'},{l:'ICBF 3%',v:fmt(eIcbf),c:'pos'},{l:'Caja 4%',v:fmt(eCaj),c:'pos'},
+        {l:'Total aportes empl.',v:fmt(totE),c:'pos'},{l:'COSTO TOTAL/MES',v:fmt(sal+totE),t:true}],'s-rows','s-res');
+}
+
+
+/* ── PWA ── */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+let _deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); _deferredPrompt=e;
+  const b=document.getElementById('install-banner');
+  if(b) b.classList.add('show');
+});
+function installPWA(){
+  if(!_deferredPrompt)return;
+  _deferredPrompt.prompt();
+  _deferredPrompt.userChoice.then(()=>{
+    _deferredPrompt=null;
+    const b=document.getElementById('install-banner');
+    if(b) b.classList.remove('show');
+  });
+}
+/* ── MORE MODAL ── */
+function openMore(){
+  const m=document.getElementById('mo-more');
+  if(m) m.classList.add('open');
+}
+function closeMore(){
+  const m=document.getElementById('mo-more');
+  if(m) m.classList.remove('open');
+}
+function updateBadges(){
+  const eC=emps.length, hC=hists.length;
+  const be=document.getElementById('bc-emp');
+  const bh=document.getElementById('bc-hist');
+  if(be) be.textContent=eC;
+  if(bh) bh.textContent=hC;
+}
+
+/* INIT */
+// Safe modal close on backdrop click
+const moMore=document.getElementById('mo-more');
+if(moMore) moMore.addEventListener('click',e=>{if(e.target===moMore)closeMore();});
+
+renderEmps(); renderHist(); updateStats(); syncSel(); calcLive();
+const nper=document.getElementById('n-per');
+if(nper) nper.value=new Date().toISOString().slice(0,7);
+const eing=document.getElementById('em-ing');
+if(eing) eing.value=new Date().toISOString().split('T')[0];
+cargarCfg();
+updateBadges();
+</script>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <button class="bn-item active" onclick="goSec('dash',this)">
+    <span class="bn-icon">🏠</span><span class="bn-lbl">Inicio</span>
+  </button>
+  <button class="bn-item" onclick="goSec('emps',this)" style="position:relative">
+    <span class="bn-bd" id="bc-emp">0</span>
+    <span class="bn-icon">👥</span><span class="bn-lbl">Empleados</span>
+  </button>
+  <button class="bn-item" onclick="goSec('nom',this)">
+    <span class="bn-icon">📋</span><span class="bn-lbl">Liquidar</span>
+  </button>
+  <button class="bn-item" onclick="goSec('hist',this)" style="position:relative">
+    <span class="bn-bd" id="bc-hist">0</span>
+    <span class="bn-icon">📜</span><span class="bn-lbl">Historial</span>
+  </button>
+  <button class="bn-item" onclick="openMore()">
+    <span class="bn-icon">☰</span><span class="bn-lbl">Más</span>
+  </button>
+</nav>
+
+<!-- MORE MODAL -->
+<div class="mo-more" id="mo-more">
+  <div class="md-more">
+    <div class="md-handle"></div>
+    <div class="more-title">Más opciones</div>
+    <button class="more-btn" onclick="closeMore();goSec('cfg',null)">⚙️ &nbsp;Mi Empresa</button>
+    <button class="more-btn" onclick="closeMore();goSec('ext',null)">⏰ &nbsp;Horas Extras & Recargos</button>
+    <button class="more-btn" onclick="closeMore();goSec('pres',null)">🏦 &nbsp;Prestaciones Sociales</button>
+    <button class="more-btn" onclick="closeMore();goSec('ss',null)">🛡️ &nbsp;Seguridad Social</button>
+  </div>
+</div>
+
+</body>
+</html>
